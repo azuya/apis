@@ -2,19 +2,8 @@
 
 class Github_User extends Github {
 
-	public function user(OAuth2_Token_Access $token = NULL, array $params = NULL)
+	public function user(OAuth2_Token_Access $token = NULL, $user = NULL, array $params = NULL)
 	{
-		if (isset($params['user']))
-		{
-				$user = Arr::get($params, 'user');
-
-				unset($params['user']);
-		}
-		else
-		{
-			$user = FALSE;
-		}
-
 		$url = $this->url(':noun/:user', array(
 				'noun' => $user ? 'users' : 'user',
 				'user' => $user,
@@ -53,12 +42,13 @@ class Github_User extends Github {
 		return $this->execute($request);
 	}
 
-	public function email_add(OAuth2_Token_Access $token, array $params = NULL)
+	public function emails_add(OAuth2_Token_Access $token, $emails, array $params = NULL)
 	{
 		$request = OAuth2_Request::factory('resource', 'POST', $this->url('user/emails'), array(
 				'access_token' => $token->token,
 			))
 			->required('access_token', TRUE)
+			->body(json_encode($emails))
 			;
 
 		if ($params)
@@ -69,12 +59,13 @@ class Github_User extends Github {
 		return $this->execute($request);
 	}
 
-	public function email_delete(OAuth2_Token_Access $token, array $params = NULL)
+	public function emails_delete(OAuth2_Token_Access $token, $emails, array $params = NULL)
 	{
 		$request = OAuth2_Request::factory('resource', 'DELETE', $this->url('user/emails'), array(
 				'access_token' => $token->token,
 			))
 			->required('access_token', TRUE)
+			->body(json_encode($emails))
 			;
 
 		if ($params)
@@ -82,22 +73,11 @@ class Github_User extends Github {
 			$request->params($params);
 		}
 
-		return $this->execute($request);
+		return $this->execute_boolean($request);
 	}
 
-	public function followers(OAuth2_Token_Access $token = NULL, array $params = NULL)
+	public function followers(OAuth2_Token_Access $token = NULL, $user = NULL, array $params = NULL)
 	{
-		if (isset($params['user']))
-		{
-				$user = Arr::get($params, 'user');
-
-				unset($params['user']);
-		}
-		else
-		{
-			$user = FALSE;
-		}
-
 		$url = $this->url(':noun/:user/followers', array(
 				'noun' => $user ? 'users' : 'user',
 				'user' => $user,
@@ -120,15 +100,11 @@ class Github_User extends Github {
 		return $this->execute($request);
 	}
 
-	public function following(OAuth2_Token_Access $token, array $params = NULL)
+	public function following(OAuth2_Token_Access $token, $user, array $params = NULL)
 	{
-		$user = Arr::get($params, 'user');
-
 		$url = $this->url('user/following/:user', array(
 				'user' => $user,
 			));
-
-		unset($params['user']);
 
 		$request = OAuth2_Request::factory('resource', 'GET', $url, array(
 				'access_token' => $token->token,
@@ -144,15 +120,11 @@ class Github_User extends Github {
 		return $this->execute_boolean($request);
 	}
 
-	public function follow(OAuth2_Token_Access $token, array $params = NULL)
+	public function follow(OAuth2_Token_Access $token, $user, array $params = NULL)
 	{
-		$user = Arr::get($params, 'user');
-
 		$url = $this->url('user/following/:user', array(
 				'user' => $user,
 			));
-
-		unset($params['user']);
 
 		$request = OAuth2_Request::factory('resource', 'PUT', $url, array(
 				'access_token' => $token->token,

@@ -37,7 +37,7 @@ abstract class Github extends OAuth2_Provider_Github {
 	 * @param   array    link parameters
 	 * @return  string
 	 */
-	public function url($link, array $params = NULL)
+	public function url($link = '', array $params = NULL)
 	{
 		if ($link AND $params)
 		{
@@ -106,7 +106,7 @@ abstract class Github extends OAuth2_Provider_Github {
 
 	/**
 	 * Executes the request, but only returns TRUE or FALSE for data.
-	 * 
+	 *
 	 * @param   object  request to be executed
 	 * @param   array   additional request options
 	 * @return  array   meta, data
@@ -131,6 +131,14 @@ abstract class Github extends OAuth2_Provider_Github {
 		{
 			$this->_headers['status'] = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 		}
+		elseif (preg_match('/^X-OAuth-Scopes:\s*(.+?)?$/', $header, $matches))
+		{
+			$this->_headers['scopes_enabled'] = isset($matches[1]) ? trim($matches[1]) : NULL;
+		}
+		elseif (preg_match('/^X-Accepted-OAuth-Scopes:\s*(.+?)?$/', $header, $matches))
+		{
+			$this->_headers['scopes_available'] = trim($matches[1]);
+		}
 		elseif (preg_match('/^X-RateLimit-Limit:\s+(\d+)/i', $header, $matches))
 		{
 			$this->_headers['rate_max'] = (int) trim($matches[1]);
@@ -139,7 +147,7 @@ abstract class Github extends OAuth2_Provider_Github {
 		{
 			$this->_headers['rate_limit'] = (int) trim($matches[1]);
 		}
-		elseif (preg_match('/^Location:\s+(.+?)/i', $header, $matches))
+		elseif (preg_match('/^Location:\s+(.+?)$/i', $header, $matches))
 		{
 			$this->_headers['location'] = trim($matches[1]);
 		}
@@ -186,6 +194,25 @@ abstract class Github extends OAuth2_Provider_Github {
 		{
 			// HTTP status
 			$meta['status'] = $headers['status'];
+		}
+
+		if ( ! empty($headers['scopes_available']))
+		{
+			if ($enabled = Arr::get($headers, 'scopes_enabled'))
+			{
+				$enabled = preg_split('/,\s*/', $enabled);
+			}
+			else
+			{
+				$enabled = array();
+			}
+
+			$available = preg_split('/,\s*/', $headers['scopes_available']);
+
+			foreach ($available as $name)
+			{
+				$meta['scopes'][$name] = in_array($name, $enabled);
+			}
 		}
 
 		if ( ! empty($headers['rate_limit']))
