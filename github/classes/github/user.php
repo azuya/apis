@@ -1,5 +1,8 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
+/**
+ * @link  http://developer.github.com/v3/users/
+ */
 class Github_User extends Github {
 
 	public function user(OAuth2_Token_Access $token = NULL, $user = NULL, array $params = NULL)
