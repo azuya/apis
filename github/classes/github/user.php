@@ -164,4 +164,98 @@ class Github_User extends Github {
 		return $this->execute_boolean($request);
 	}
 
+	public function keys(OAuth2_Token_Access $token, array $params = NULL)
+	{
+		$request = OAuth2_Request::factory('resource', 'GET', $this->url('user/keys'), array(
+				'access_token' => $token->token,
+			))
+			->required('access_token', TRUE)
+			;
+
+		if ($params)
+		{
+			$request->params($params);
+		}
+
+		return $this->execute($request);
+	}
+
+	public function key(OAuth2_Token_Access $token, $id, array $params = NULL)
+	{
+		$url = $this->url('user/keys/:id', array(
+				'id' => $id,
+			));
+
+		$request = OAuth2_Request::factory('resource', 'GET', $url, array(
+				'access_token' => $token->token,
+			))
+			->required('access_token', TRUE)
+			;
+
+		if ($params)
+		{
+			$request->params($params);
+		}
+
+		return $this->execute($request);
+	}
+
+	public function key_add(OAuth2_Token_Access $token, $key, array $params = NULL)
+	{
+		$request = OAuth2_Request::factory('resource', 'POST', $this->url('user/keys'), array(
+				'access_token' => $token->token,
+			))
+			->required('access_token', TRUE)
+			->body(json_encode($key))
+			;
+
+		if ($params)
+		{
+			$request->params($params);
+		}
+
+		return $this->execute($request);
+	}
+
+	public function key_update(OAuth2_Token_Access $token, $id, $key, array $params = NULL)
+	{
+		$url = $this->url('user/keys/:id', array(
+				'id' => $id,
+			));
+
+		$request = OAuth2_Request::factory('resource', 'PATCH', $url, array(
+				'access_token' => $token->token,
+			))
+			->required('access_token', TRUE)
+			->body(json_encode($key))
+			;
+
+		if ($params)
+		{
+			$request->params($params);
+		}
+
+		return $this->execute($request);
+	}
+
+	public function key_delete(OAuth2_Token_Access $token, $id, array $params = NULL)
+	{
+		$url = $this->url('user/keys/:id', array(
+				'id' => $id,
+			));
+
+		$request = OAuth2_Request::factory('resource', 'DELETE', $url, array(
+				'access_token' => $token->token,
+			))
+			->required('access_token', TRUE)
+			;
+
+		if ($params)
+		{
+			$request->params($params);
+		}
+
+		return $this->execute_boolean($request);
+	}
+
 }

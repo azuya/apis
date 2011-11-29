@@ -198,6 +198,117 @@ class Controller_Demo_Github extends Controller_Demo_OAuth2 {
 		}
 	}
 
+	public function demo_user_keys()
+	{
+		$api = Github::factory('user');
+
+		list($meta, $data) = $api->keys($this->token);
+
+		$this->content = Debug::vars($meta, $data);
+	}
+
+	public function demo_user_key()
+	{
+		if ($this->request->method() === Request::POST)
+		{
+			// Get the key id from POST
+			$id = Arr::get($_POST, 'id');
+
+			$api = Github::factory('user');
+
+			list($meta, $data) = $api->key($this->token, $id);
+
+			$this->content = Debug::vars($meta, $data);
+		}
+		else
+		{
+			$this->content = View::factory('demo/form')
+				->set('message', 'Enter a key id.')
+				->set('inputs', array(
+					'ID' => Form::input('id'),
+				))
+				;
+		}
+	}
+
+	public function demo_user_key_add()
+	{
+		if ($this->request->method() === Request::POST)
+		{
+			// Get the key data from POST
+			$key = Arr::extract($_POST, array('title', 'key'));
+
+			$api = Github::factory('user');
+
+			list($meta, $data) = $api->key_add($this->token, $key);
+
+			$this->content = Debug::vars($meta, $data);
+		}
+		else
+		{
+			$this->content = View::factory('demo/form')
+				->set('message', 'Create a new SSH key.')
+				->set('inputs', array(
+					'Title' => Form::input('title'),
+					'SSH Key' => Form::textarea('key'),
+				))
+				;
+		}
+	}
+
+	public function demo_user_key_update()
+	{
+		if ($this->request->method() === Request::POST)
+		{
+			// Get the key id from POST
+			$id = Arr::get($_POST, 'id');
+
+			// Get the key data from POST
+			$key = Arr::extract($_POST, array('title', 'key'));
+
+			$api = Github::factory('user');
+
+			list($meta, $data) = $api->key_update($this->token, $id, $key);
+
+			$this->content = Debug::vars($meta, $data);
+		}
+		else
+		{
+			$this->content = View::factory('demo/form')
+				->set('message', 'Update an SSH key.')
+				->set('inputs', array(
+					'ID' => Form::input('id'),
+					'Title' => Form::input('title'),
+					'SSH Key' => Form::textarea('key'),
+				))
+				;
+		}
+	}
+
+	public function demo_user_key_delete()
+	{
+		if ($this->request->method() === Request::POST)
+		{
+			// Get the key id from POST
+			$id = Arr::get($_POST, 'id');
+
+			$api = Github::factory('user');
+
+			list($meta, $data) = $api->key_delete($this->token, $id);
+
+			$this->content = Debug::vars($meta, $data);
+		}
+		else
+		{
+			$this->content = View::factory('demo/form')
+				->set('message', 'Enter a key id.')
+				->set('inputs', array(
+					'Key ID' => Form::input('id'),
+				))
+				;
+		}
+	}
+
 	public function demo_login()
 	{
 		// Attempt to complete signin
