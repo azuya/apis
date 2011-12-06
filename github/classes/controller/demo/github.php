@@ -309,6 +309,139 @@ class Controller_Demo_Github extends Controller_Demo_OAuth2 {
 		}
 	}
 
+	public function demo_gists()
+	{
+		if ($this->request->method() === 'POST')
+		{
+			$params = Arr::extract($_POST, array('user'));
+
+			$api = Github::factory('gist');
+
+			list($meta, $data) = $api->user($this->token, $params);
+
+			$this->content = Debug::vars($meta, $data);
+		}
+		else
+		{
+			$this->content = View::factory('demo/form')
+				->set('message', 'Enter the username to look up, or leave blank for the authenticated user.')
+				->set('inputs', array(
+					'Username' => Form::input('user'),
+				))
+				;
+		}
+	}
+
+	public function demo_gists_public()
+	{
+		$api = Github::factory('gist');
+
+		list($meta, $data) = $api->pub($this->token);
+
+		$this->content = Debug::vars($meta, $data);
+	}
+
+	public function demo_gists_starred()
+	{
+		$api = Github::factory('gist');
+
+		list($meta, $data) = $api->starred($this->token);
+
+		$this->content = Debug::vars($meta, $data);
+	}
+
+	public function demo_gists_get()
+	{
+		if ($this->request->method() === 'POST')
+		{
+			$params = Arr::extract($_POST, array('id'));
+
+			$api = Github::factory('gist');
+
+			list($meta, $data) = $api->get($this->token, $params);
+
+			$this->content = Debug::vars($meta, $data);
+		}
+		else
+		{
+			$this->content = View::factory('demo/form')
+				->set('message', 'Enter the Gist ID to look up.')
+				->set('inputs', array(
+					'Identifier' => Form::input('id'),
+				))
+				;
+		}
+	}
+
+	public function demo_gists_is_star()
+	{
+		if ($this->request->method() === 'POST')
+		{
+			$params = Arr::extract($_POST, array('id'));
+
+			$api = Github::factory('gist');
+
+			list($meta, $data) = $api->is_star($this->token, $params);
+
+			$this->content = Debug::vars($meta, $data);
+		}
+		else
+		{
+			$this->content = View::factory('demo/form')
+				->set('message', 'Enter the Gist ID to look up.')
+				->set('inputs', array(
+					'Identifier' => Form::input('id'),
+				))
+				;
+		}
+	}
+
+	public function demo_gists_star()
+	{
+		if ($this->request->method() === 'POST')
+		{
+			$params = Arr::extract($_POST, array('id'));
+
+			$api = Github::factory('gist');
+
+			list($meta, $data) = $api->star($this->token, $params);
+
+			$this->content = Debug::vars($meta, $data);
+		}
+		else
+		{
+			$this->content = View::factory('demo/form')
+				->set('message', 'Enter the Gist ID to star.')
+				->set('inputs', array(
+					'Identifier' => Form::input('id'),
+				))
+				;
+		}
+	}
+
+	public function demo_gists_unstar()
+	{
+		if ($this->request->method() === 'POST')
+		{
+			$params = Arr::extract($_POST, array('id'));
+
+			$api = Github::factory('gist');
+
+			list($meta, $data) = $api->unstar($this->token, $params);
+
+			$this->content = Debug::vars($meta, $data);
+		}
+		else
+		{
+			$this->content = View::factory('demo/form')
+				->set('message', 'Enter the Gist ID to unstar.')
+				->set('inputs', array(
+					'Identifier' => Form::input('id'),
+				))
+				;
+		}
+	}
+
 	public function demo_login()
 	{
 		// Attempt to complete signin
