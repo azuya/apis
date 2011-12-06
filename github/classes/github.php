@@ -26,6 +26,29 @@ abstract class Github extends OAuth2_Provider_Github {
 	}
 
 	/**
+	 * Get an array value and remove it from the array.
+	 *
+	 * @param   string  array key
+	 * @param   array   array to search
+	 * @return  mixed
+	 */
+	public static function remove(array & $array, $key)
+	{
+		if (array_key_exists($key, $array))
+		{
+			$value = $array[$key];
+
+			unset($array[$key]);
+		}
+		else
+		{
+			$value = NULL;
+		}
+
+		return $value;
+	}
+
+	/**
 	 * @var  array  current request headers
 	 */
 	protected $_headers = array();
